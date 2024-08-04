@@ -24,7 +24,7 @@ def driver_init(neo4j_driver):
     neo4j_driver.remove_all_transitivity = rel_manager.remove_all_transitivity
     
     # order matters. wrap_execute_query should be the last one. so the driver can use use rel_manager.is_transitive
-    #TODO: update to pass in the rel manager instead of the driver. To make it less nested
+
     neo4j_driver.execute_query = wrap_execute_query(original_execute_query,rel_manager=rel_manager)
 
     # overwrite the session to make sure the driver is not using the default session but the one with the updated execute_query
