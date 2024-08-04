@@ -17,8 +17,6 @@ regex_pattern_without_col = (
 # 4th capture is *
 
 def update_relations_with_col(match):
-
-    print("match", match.group(0))
     rel_type = match.group(1)
     astriks = match.group(2)
     if astriks:
@@ -27,7 +25,8 @@ def update_relations_with_col(match):
         # no astriks 
         if is_transitive(rel_type):
             return match.group(0).replace(f":{rel_type}", f":{rel_type}*")
-    
+        else:
+            return match.group(0)
 
 
 def update_relations_without_col(match):
@@ -39,12 +38,25 @@ def update_relations_without_col(match):
         # no astriks 
         if is_transitive(rel_type):
             return match.group(0).replace(f"[{rel_type}]", f"[{rel_type}*]")
+        else:
+            return match.group(0)
+
+
+def is_transitive(rel_name):
+    return ALL_TRANSITIVE_RELATIONS
+    
 
 
 
-
-def update_query(q, force=False):
+def update_query(q, force=False, rel_manager=None):
     global ALL_TRANSITIVE_RELATIONS
+    global is_transitive
+    # if driver is passed, then use the driver's is_transitive
+    if rel_manager:
+        is_transitive = rel_manager.is_transitive
+    else:
+        is_transitive = lambda rel_name: ALL_TRANSITIVE_RELATIONS
+
     ALL_TRANSITIVE_RELATIONS = force
     non_matching_kw = ["CALL","CREATE","DELETE","DETACH","FOREACH","LOAD","MERGE","OPTIONAL","REMOVE","RETURN","SET","START","UNION","UNWIND","WITH"]
     matching_kw = ["MATCH"]
@@ -63,23 +75,12 @@ def update_query(q, force=False):
             new = word
             new = re.sub(regex_pattern_with_col, update_relations_with_col, word)
             new = re.sub(regex_pattern_without_col, update_relations_without_col, new)
+
         else:
             new = word
         updated_query += new + " "
     # remove the last space
     return updated_query[:-1]
-
-    
-
-
-
-
-def is_transitive(q):
-    if ALL_TRANSITIVE_RELATIONS == True:
-        return True
-    else:
-        return True
-
 
 def extract_relations():
     pass
