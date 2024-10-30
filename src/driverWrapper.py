@@ -16,7 +16,7 @@ def wrap_execute_query(original_query, rel_manager=None):
 def driver_init(neo4j_driver):
     original_execute_query = neo4j_driver.execute_query
     
-    rel_manager = driverRelManager(neo4j_driver)
+    rel_manager = driverRelManager(neo4j_driver, cached=True)
     
     neo4j_driver.is_transitive = rel_manager.is_transitive
     neo4j_driver.update_transitive_relationship = rel_manager.update_transitive_relationship

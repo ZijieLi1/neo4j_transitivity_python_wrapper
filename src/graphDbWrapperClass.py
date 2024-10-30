@@ -8,3 +8,6 @@ class Neo4jWrapper(GraphDatabase):
 
 
 
+if __name__ == "__main__":
+    uri = "bolt://localhost:7687"
+    auth = ("neo4j", "0000000000")
