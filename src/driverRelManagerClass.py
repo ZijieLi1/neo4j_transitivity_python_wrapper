@@ -16,14 +16,14 @@ class driverRelManager():
         CREATE (m:TMetadata {{nameList: [], last_update: 0}})
         RETURN m
         """
-        self.driver.execute_query(query)
+        self.driver.execute_query(query, filter = None)
 
     def meta_node_exists(self):
         query = f"""
         MATCH (m:TMetadata)
         RETURN m
         """
-        records, summary, keys = self.driver.execute_query(query)
+        records, summary, keys = self.driver.execute_query(query, filter = None)
         return len(records) > 0
     def update_transitive_relationship(self, rel_name, is_transitive = True):
         if not self.meta_node_exists():
@@ -43,7 +43,7 @@ class driverRelManager():
         SET m.last_update = m.last_update + 1
         RETURN m
         """
-        self.driver.execute_query(query)
+        self.driver.execute_query(query, filter = None)
 
     def remove_transitive_relationship(self, rel_name):
         x = self.get_all_transitivity()
@@ -57,7 +57,7 @@ class driverRelManager():
         SET m.last_update = m.last_update + 1
         RETURN m
         """
-        self.driver.execute_query(query)
+        self.driver.execute_query(query, filter = None)
 
     def is_transitive(self, rel_name):
         if self.cached:
@@ -69,7 +69,7 @@ class driverRelManager():
         MATCH (m:TMetadata)
         RETURN '{rel_name}' IN m.nameList AS nameExists
         """
-        records, summary, keys = self.driver.execute_query(query)
+        records, summary, keys = self.driver.execute_query(query, filter = None)
         
         # Check if the name exists in the database. return False for the case of keyerror, eg, when meta node does not exist or no driver connections.
         try:
@@ -84,7 +84,7 @@ class driverRelManager():
         MATCH (m:TMetadata)
         RETURN m.nameList
         """
-        records, summary, keys = self.driver.execute_query(query)
+        records, summary, keys = self.driver.execute_query(query, filter = None)
 
         # handle the case where there is no metadata node
         if not records:
@@ -98,7 +98,7 @@ class driverRelManager():
         SET m.last_update = m.last_update + 1
         RETURN m
         """
-        self.driver.execute_query(query)
+        self.driver.execute_query(query, filter = None)
 
     def cached_up_to_date(self):
         # check if last update is the same as the last cached
@@ -106,7 +106,7 @@ class driverRelManager():
         MATCH (m:TMetadata)
         RETURN m.last_update
         """
-        records, summary, keys = self.driver.execute_query(query)
+        records, summary, keys = self.driver.execute_query(query, filter = None)
         last_update = records[0]['m.last_update']
         if last_update != self.last_cached:
             print("last update: ", last_update, "last cached: ", self.last_cached)

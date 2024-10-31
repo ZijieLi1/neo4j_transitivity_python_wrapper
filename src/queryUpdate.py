@@ -48,7 +48,7 @@ def is_transitive(rel_name):
 
 
 
-def update_query(q, force=False, rel_manager=None):
+def update_query(q, force=False, rel_manager=None, filter=None):
     global ALL_TRANSITIVE_RELATIONS
     global is_transitive
     # if driver is passed, then use the driver's is_transitive
@@ -70,6 +70,12 @@ def update_query(q, force=False, rel_manager=None):
         elif word.upper() in non_matching_kw:
             isMatching = False
             new = word
+            if word.upper() == "RETURN" and filter:
+                # find the return node name and print it 
+                return_node = re.search(r"RETURN\s(\w+)", q)
+                if return_node:
+                    print(f"returning node: {return_node.group(1)}")
+                    return_node_name = return_node.group(1)
         # check if contain relationships
         if isMatching:
             new = word
@@ -79,9 +85,17 @@ def update_query(q, force=False, rel_manager=None):
         else:
             new = word
         updated_query += new + " "
+    # update to replace return name.*** to WHERE name.gender = male RETURN.***
+    # Achieve by replacing RETURN to WHERE name.attribute = value RETURN
+    if filter != None:
+        print(f"returning node: {return_node_name}")
+        clause = filter.create_condition_clause(return_node_name)
+        updated_query = updated_query.replace("RETURN", f"WHERE {clause} RETURN")
+        print(updated_query)
     # remove the last space
     return updated_query[:-1]
 
+    
 def extract_relations():
     pass
 
