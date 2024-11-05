@@ -109,8 +109,8 @@ class driverRelManager():
         records, summary, keys = self.driver.execute_query(query, filter = None)
         last_update = records[0]['m.last_update']
         if last_update != self.last_cached:
-            print("last update: ", last_update, "last cached: ", self.last_cached)
-            print("updating cache")
+            # print("last update: ", last_update, "last cached: ", self.last_cached)
+            # print("updating cache")
             self.cached_transitivity = self.get_all_transitivity()
             self.last_cached = last_update
-            print("cache updated", "set last cached to: ", self.last_cached)
+            # print("cache updated", "set last cached to: ", self.last_cached)
