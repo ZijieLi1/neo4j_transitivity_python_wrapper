@@ -74,7 +74,6 @@ def update_query(q, force=False, rel_manager=None, filter=None):
                 # find the return node name and print it 
                 return_node = re.search(r"RETURN\s(\w+)", q)
                 if return_node:
-                    print(f"returning node: {return_node.group(1)}")
                     return_node_name = return_node.group(1)
         # check if contain relationships
         if isMatching:
